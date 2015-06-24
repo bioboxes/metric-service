@@ -2,7 +2,10 @@ machine:
   services:
     - docker
 
+dependencies:
+  override:
+    - ./script/bootstrap
+
 test:
   override:
-    - ./script/build
     - ./script/test

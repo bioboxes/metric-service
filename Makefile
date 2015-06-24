@@ -1,9 +1,5 @@
-all: .upload
+bootstrap: .image
 
-.upload: ./bin/upload_metrics.py data/metrics.yaml
-	$^
-	touch .upload
-
-data/metrics.yaml: ./bin/fetch_metrics.py
-	mkdir -p $(dir $@)
-	$^ > $@
+.image: $(shell find bin) requirements.txt crontab
+	docker build --tag metrics .
+	touch $@
