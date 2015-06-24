@@ -13,14 +13,13 @@ seconds   = int(time.time())
 with open(sys.argv[1], 'r') as f:
     metrics = yaml.load(f.read())
 
-def create_entry((name, downloads)):
-    repo, container = name.split("/")
-    item = {'container' : container,
-           'repo'      : repo,
-           'variable'  : 'downloads',
-           'value'     : downloads,
-           'collected' : timestamp}
-    key = hashlib.sha256(str(seconds) + name).hexdigest()
+def create_entry(metric):
+    item = {'container' : metric['name'],
+            'repo'      : metric['namespace'],
+            'variable'  : 'downloads',
+            'value'     : metric['pull_count'],
+            'collected' : timestamp}
+    key = hashlib.sha256(str(seconds) + metric['name']).hexdigest()
     return [key, item]
 
 def upload(entries):

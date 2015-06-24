@@ -2,20 +2,12 @@
 
 from lxml import html
 import yaml
+import json
 
 def fetch_page(url):
     import requests
     return requests.get(url).text
 
-def fetch_download_data(repo):
-    """
-    Fetches numbers of container downloads for a given dockerhub repo.
-    """
-    url = "https://registry.hub.docker.com/repos/{}/".format(repo)
-    tree = html.fromstring(fetch_page(url))
-    downloads = map(int, tree.xpath('//div[@title="Number of pulls"]/div/text()'))
-    names     = map(lambda x: x.strip(), tree.xpath('//h2/text()'))
-    return zip(names, downloads)
 
 def fetch_list_of_bioboxes():
     """
@@ -26,6 +18,20 @@ def fetch_list_of_bioboxes():
     f = lambda x: x['image']['dockerhub']
     return set(reduce(lambda acc, x: acc + map(f,x), raw.values(), []))
 
+
+def fetch_metrics_data(repo, page = 1, acc = []):
+    """
+    Collect container metrics from docker hub repository
+    """
+    url = "https://registry.hub.docker.com/v2/repositories/{}/?page={}"
+    metrics = json.loads(fetch_page(url.format(repo, page)))
+
+    if metrics['next'] is not None:
+        return fetch_metrics_data(repo, page + 1, acc + metrics['results'])
+    else:
+        return acc + metrics['results']
+
+
 def container_repo(container):
     """
     Get the repository of a container
@@ -34,7 +40,7 @@ def container_repo(container):
 
 containers = fetch_list_of_bioboxes()
 repositories = set(map(container_repo, containers))
-all_downloads = reduce(lambda acc, x: acc + fetch_download_data(x), repositories, [])
+metrics = reduce(lambda y, x: y + x, map(fetch_metrics_data, repositories))
 
-metrics = filter(lambda (x, y): x in containers, all_downloads)
+filter(lambda x: x['namespace'] + "/" + x["name"] in containers, metrics)
 print yaml.safe_dump(metrics)
