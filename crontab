@@ -1,1 +1,1 @@
-0 1 * * 1 root cd /metrics && make
+0 1 * * 1 root /metrics/bin/collect_metrics.py >> /var/log/cron.log 2>&1
