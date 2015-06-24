@@ -73,7 +73,7 @@ def upload((key, entry)):
     conn = boto.sdb.connect_to_region('us-west-1',
       aws_access_key_id     = os.environ['AWS_ACCESS_KEY'],
       aws_secret_access_key = os.environ['AWS_SECRET_KEY'])
-    domain = conn.get_domain('bioboxes-container-metrics')
+    domain = conn.get_domain(os.environ['AWS_SIMPLEDB_NAME'])
     domain.put_attributes(key, entry)
 
 
