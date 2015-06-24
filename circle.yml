@@ -2,7 +2,13 @@ machine:
   services:
     - docker
 
+dependencies:
+  cache_directories:
+    - "vendor"
+  override:
+    - ./plumbing/cache_docker metrics
+    - ./script/bootstrap
+
 test:
   override:
-    - docker info
-    - docker build .
+    - ./script/feature

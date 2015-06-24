@@ -1,9 +1,12 @@
-all: .upload
+feature: .image
+	@docker run \
+		--env="AWS_ACCESS_KEY=${AWS_ACCESS_KEY}" \
+		--env="AWS_SECRET_KEY=${AWS_SECRET_KEY}" \
+		--env="AWS_SIMPLEDB_NAME=${AWS_SIMPLEDB_NAME}" \
+		metrics /metrics/bin/collect_metrics.py
 
-.upload: ./bin/upload_metrics.py data/metrics.yaml
-	$^
-	touch .upload
+bootstrap: .image
 
-data/metrics.yaml: ./bin/fetch_metrics.py
-	mkdir -p $(dir $@)
-	$^ > $@
+.image: $(shell find bin) requirements.txt crontab
+	docker build --tag metrics .
+	touch $@

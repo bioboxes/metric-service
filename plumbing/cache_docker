@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+IMAGE=$1
+FILE="vendor/docker/${IMAGE}.tar"
+
+if [[ -e ${FILE} ]]; then
+  docker load -i ${FILE}
+fi
+
+make .image
+mkdir -p $(dirname ${FILE})
+docker save ${IMAGE} > ${FILE}
