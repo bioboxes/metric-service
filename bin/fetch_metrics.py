@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
-from lxml import html
-import yaml
+import datetime
+import hashlib
+import itertools as it
 import json
+import os
+import time
+
+import boto.sdb
+
+timestamp = datetime.datetime.utcnow().isoformat("T") + "Z"
+seconds   = int(time.time())
 
 def fetch_page(url):
     import requests
@@ -32,15 +40,43 @@ def fetch_metrics_data(repo, page = 1, acc = []):
         return acc + metrics['results']
 
 
+def create_entry(metric):
+    """
+    Format metrics for upload to simpledb
+    """
+    item = {'container' : metric['name'],
+            'repo'      : metric['namespace'],
+            'variable'  : 'downloads',
+            'value'     : metric['pull_count'],
+            'collected' : timestamp}
+    key = hashlib.sha256(str(seconds) + metric['name']).hexdigest()
+    return [key, item]
+
+
 def container_repo(container):
     """
     Get the repository of a container
     """
     return container.split("/")[0]
 
-containers = fetch_list_of_bioboxes()
-repositories = set(map(container_repo, containers))
-metrics = reduce(lambda y, x: y + x, map(fetch_metrics_data, repositories))
 
-filter(lambda x: x['namespace'] + "/" + x["name"] in containers, metrics)
-print yaml.safe_dump(metrics)
+def generate_metrics():
+    containers   = fetch_list_of_bioboxes()
+    repositories = set(map(container_repo, containers))
+    metrics =  filter(
+            lambda x: x['namespace'] + "/" + x["name"] in containers,
+            it.chain(*map(fetch_metrics_data, repositories)))
+    return map(create_entry, metrics)
+
+
+def upload((key, entry)):
+    conn = boto.sdb.connect_to_region('us-west-1',
+      aws_access_key_id     = os.environ['AWS_ACCESS_KEY'],
+      aws_secret_access_key = os.environ['AWS_SECRET_KEY'])
+    domain = conn.get_domain('bioboxes-container-metrics')
+    domain.put_attributes(key, entry)
+
+
+metrics = generate_metrics()
+map(upload, metrics)
+print "Completed processing {} entries at {}".format(len(metrics), timestamp)
