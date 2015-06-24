@@ -1,9 +1,16 @@
 FROM python:2.7
 MAINTAINER Michael Barton, mail@michaelbarton.me.uk
 
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends cron
+
+ADD ./requirements.txt /metrics/requirements.txt
+RUN pip install -r /metrics/requirements.txt
+
 ADD . /metrics
-WORKDIR metrics
 
-RUN pip install -r requirements.txt
+ADD crontab /etc/cron.d/metrics-cron
+RUN chmod 0644 /etc/cron.d/metrics-cron
+RUN touch /var/log/cron.log
 
-CMD ['make']
+CMD cron && tail -f /var/log/cron.log
