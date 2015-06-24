@@ -4,5 +4,5 @@ machine:
 
 test:
   override:
-    - docker info
-    - docker build .
+    - ./script/build
+    - ./script/test
