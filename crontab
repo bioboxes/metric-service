@@ -1,1 +1,1 @@
-0 1 * * 4 root /metrics/bin/collect_metrics.py >> /var/log/cron.log 2>&1
+0 1 * * 4 root /metrics/process_metrics >> /var/log/cron.log 2>&1
