@@ -4,13 +4,12 @@ set -o errexit
 set -o nounset
 set -o xtrace
 
-IMAGE=$1
-FILE="vendor/docker/${IMAGE}.tar"
+FILE="vendor/docker/python.tar"
 
 if [[ -e ${FILE} ]]; then
   docker load -i ${FILE}
+else
+  docker pull python:2.7
+  docker save python:2.7 > ${FILE}
 fi
 
-make .image
-mkdir -p $(dirname ${FILE})
-docker save ${IMAGE} > ${FILE}
