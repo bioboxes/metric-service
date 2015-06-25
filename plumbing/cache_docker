@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o nounset
+set -o xtrace
 
 IMAGE=$1
 FILE="vendor/docker/${IMAGE}.tar"
