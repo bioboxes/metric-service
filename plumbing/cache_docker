@@ -9,6 +9,7 @@ FILE="vendor/docker/python.tar"
 if [[ -e ${FILE} ]]; then
   docker load -i ${FILE}
 else
+  mkdir -p $(dirname ${FILE})
   docker pull python:2.7
   docker save python:2.7 > ${FILE}
 fi
