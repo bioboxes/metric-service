@@ -11,15 +11,13 @@ import sys
 
 import boto.sdb
 
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(path, '..', 'src'))
+
+import util
+
 timestamp = datetime.datetime.utcnow().isoformat("T") + "Z"
 seconds   = int(time.time())
-
-def environment_var(name):
-    if (name in os.environ.keys()):
-      return os.environ[name]
-    else:
-      sys.stderr.write("Environment variable not set: {}\n".format(name))
-      exit(1)
 
 def fetch_page(url):
     import requests
@@ -80,9 +78,9 @@ def generate_metrics():
 
 def upload((key, entry)):
     conn = boto.sdb.connect_to_region('us-west-1',
-      aws_access_key_id     = environment_var('AWS_ACCESS_KEY'),
-      aws_secret_access_key = environment_var('AWS_SECRET_KEY'))
-    domain = conn.get_domain(environment_var('AWS_SIMPLEDB_NAME'))
+      aws_access_key_id     = util.environment_var('AWS_ACCESS_KEY'),
+      aws_secret_access_key = util.environment_var('AWS_SECRET_KEY'))
+    domain = conn.get_domain(util.environment_var('AWS_SIMPLEDB_NAME'))
     domain.put_attributes(key, entry)
 
 
