@@ -1,1 +1,1 @@
-0 1 * * 6 root /metrics/process_metrics >> /var/log/cron.log 2>&1
+0 1 * * 2 root /metrics/process_metrics >> /var/log/cron.log 2>&1
