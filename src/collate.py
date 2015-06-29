@@ -22,8 +22,14 @@ def total(df):
     axes = [pd.TimeGrouper('W'), 'variable']
     return df.groupby(axes).aggregate(sum)
 
-def execute():
+def generate_metrics():
     metrics  = collate_by_week(fetch_metrics())
-    collated = {'total' : total(metrics).to_dict(),
-            'per_container' : per_container(metrics).reset_index().to_dict(orient="list")}
+    collated = {
+      'total' :         total(metrics).reset_index().to_dict(orient="list"),
+      'per_container' : per_container(metrics).reset_index().to_dict(orient="list")}
     return collated
+
+def execute():
+    metrics = generate_metrics()
+    metric_date = metrics['total']['collected'][-1].isoformat()
+    return metric_date
