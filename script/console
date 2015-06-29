@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -o errexit
+
+fetch(){
+  grep $1 ~/.aws_credentials | cut -f 2 -d '=' | tr -d ' '
+}
+
+AWS_SECRET_KEY=$(fetch "AWS_SECRET_KEY") \
+AWS_ACCESS_KEY=$(fetch "AWS_ACCESS_KEY") \
+AWS_SIMPLEDB_NAME="bioboxes-container-metrics-testing" \
+make console
