@@ -13,4 +13,6 @@ ADD crontab /etc/cron.d/metrics-cron
 RUN chmod 0644 /etc/cron.d/metrics-cron
 RUN touch /var/log/cron.log
 
-CMD cron && tail -f /var/log/cron.log
+CMD env > /root/environment && \
+    cron && \
+    tail -f /var/log/syslog /var/log/cron.log
