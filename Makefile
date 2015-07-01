@@ -4,7 +4,8 @@ feature: .image
 		--env="AWS_SECRET_KEY=${AWS_SECRET_KEY}" \
 		--env="AWS_SIMPLEDB_NAME=${AWS_SIMPLEDB_NAME}" \
 		--tty \
-		metrics /metrics/bin/collect_metrics.py
+		metrics \
+		/metrics/cron/test /metrics/bin/collect_metrics.py
 
 console: .image
 	@docker run \
@@ -18,6 +19,6 @@ console: .image
 
 bootstrap: .image
 
-.image: $(shell find bin src) requirements.txt crontab Dockerfile cron_task
+.image: $(shell find bin src cron) requirements.txt Dockerfile
 	docker build --tag metrics .
 	touch $@
