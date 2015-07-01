@@ -31,5 +31,4 @@ def generate_metrics():
 
 def execute():
     metrics = generate_metrics()
-    metric_date = metrics['total']['collected'][-1].isoformat()
-    return metric_date
+    util.upload_file("v1/containers.json", json.dumps(metrics))
