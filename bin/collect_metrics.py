@@ -9,7 +9,6 @@ import os
 import time
 import sys
 
-import boto.sdb
 
 path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(path, '..', 'src'))
@@ -77,11 +76,7 @@ def generate_metrics():
 
 
 def upload((key, entry)):
-    conn = boto.sdb.connect_to_region('us-west-1',
-      aws_access_key_id     = util.environment_var('AWS_ACCESS_KEY'),
-      aws_secret_access_key = util.environment_var('AWS_SECRET_KEY'))
-    domain = conn.get_domain(util.environment_var('AWS_SIMPLEDB_NAME'))
-    domain.put_attributes(key, entry)
+    util.sdb_domain().put_attributes(key, entry)
 
 
 metrics = generate_metrics()

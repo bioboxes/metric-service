@@ -1,3 +1,18 @@
 #!/bin/bash
 
-make feature
+set -o errexit
+
+fetch(){
+  grep $1 ~/.aws_credentials | cut -f 2 -d '=' | tr -d ' '
+}
+
+if [ "${CI}" = "true" ];
+then
+  make feature
+else
+  AWS_SECRET_KEY=$(fetch "AWS_SECRET_KEY") \
+  AWS_ACCESS_KEY=$(fetch "AWS_ACCESS_KEY") \
+  AWS_SIMPLEDB_NAME="bioboxes-container-metrics-testing" \
+  AWS_S3_BUCKET="metrics.bioboxes.org-testing" \
+  make feature
+fi
