@@ -13,6 +13,6 @@ ADD crontab /etc/cron.d/metrics-cron
 RUN chmod 0644 /etc/cron.d/metrics-cron
 RUN touch /var/log/cron.log
 
-CMD env | grep -v "TUTUM" > /root/environment && \
+CMD env | grep -v "TUTUM" > /root/user-environment && \
     cron && \
     tail -f /var/log/cron.log

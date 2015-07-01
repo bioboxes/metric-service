@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-env - PATH=${PATH}:/metrics/bin $(cat /root/environment) /bin/bash -c $1 >> /var/log/cron.log 2>&1
+env - PATH=${PATH}:/metrics/bin $(cat /root/user-environment) /bin/bash -c $1 >> /var/log/cron.log 2>&1
