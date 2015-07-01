@@ -17,6 +17,12 @@ console: .image
 		--rm \
 		metrics python -i /metrics/src/console.py
 
+ssh: .image
+	$(docker) \
+		--interactive \
+		--rm \
+		metrics /bin/bash
+
 bootstrap: .image
 
 .image: $(shell find bin src cron) requirements.txt Dockerfile
