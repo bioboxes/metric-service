@@ -2,6 +2,7 @@
 
 set -o xtrace
 
+CRON_ENV="HOME=/root LOGNAME=root PATH=/usr/bin:/bin SHELL=/bin/sh"
 env > /root/user-environment
-env - $(cat /metrics/cron/env) /metrics/cron/task $@
+env - ${CRON_ENV} /metrics/cron/task $@
 cat /var/log/cron.log
