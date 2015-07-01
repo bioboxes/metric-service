@@ -8,6 +8,6 @@ feature: .image
 
 bootstrap: .image
 
-.image: $(shell find bin cron) requirements.txt Dockerfile
+.image: $(shell find bin src cron) requirements.txt Dockerfile
 	docker build --tag metrics .
 	touch $@
