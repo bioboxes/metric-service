@@ -3,5 +3,5 @@
 set -o xtrace
 
 env > /root/user-environment
-env - $(cat /metrics/cron_env) /metrics/cron_task $@
+env - $(cat /metrics/cron/env) /metrics/cron/task $@
 cat /var/log/cron.log

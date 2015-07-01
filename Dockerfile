@@ -9,7 +9,7 @@ RUN pip install -r /metrics/requirements.txt
 
 ADD . /metrics
 
-ADD crontab /etc/cron.d/metrics-cron
+ADD cron/tab /etc/cron.d/metrics-cron
 RUN chmod 0644 /etc/cron.d/metrics-cron
 RUN touch /var/log/cron.log
 RUN touch /root/user-environment
