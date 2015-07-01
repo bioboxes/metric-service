@@ -31,4 +31,4 @@ def generate_metrics():
 
 def execute():
     metrics = generate_metrics()
-    util.upload_file("v1/containers.json", json.dumps(metrics))
+    util.upload_file("v1/containers.json", util.json_dump(metrics))

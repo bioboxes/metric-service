@@ -18,6 +18,17 @@ def fetch_all_metrics():
     return sdb_domain().select(
         'select * from `{}`'.format(environment_var('AWS_SIMPLEDB_NAME')))
 
+def json_dump(obj):
+    import json
+    import pandas as pd
+    class MyEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, pd.Timestamp):
+                return obj.strftime("%F")
+            return json.JSONEncoder.default(self, obj)
+    return json.dumps(obj, cls = MyEncoder)
+
+
 def upload_file(name, contents):
     import boto.s3
     import boto.s3.connection
