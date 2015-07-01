@@ -1,2 +1,0 @@
-@reboot   root /metrics/cron_task /metrics/bin/check_environment.py
-0 1 * * 3 root /metrics/cron_task /metrics/bin/collect_metrics.py
