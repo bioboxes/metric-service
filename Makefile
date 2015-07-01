@@ -1,11 +1,14 @@
+docker := docker run \
+	  --env="AWS_ACCESS_KEY=${AWS_ACCESS_KEY}" \
+	  --env="AWS_SECRET_KEY=${AWS_SECRET_KEY}" \
+	  --env="AWS_SIMPLEDB_NAME=${AWS_SIMPLEDB_NAME}" \
+	  --tty
+
+test := $(docker) metrics /metrics/cron/test
+
 feature: .image
-	@docker run \
-		--env="AWS_ACCESS_KEY=${AWS_ACCESS_KEY}" \
-		--env="AWS_SECRET_KEY=${AWS_SECRET_KEY}" \
-		--env="AWS_SIMPLEDB_NAME=${AWS_SIMPLEDB_NAME}" \
-		--tty \
-		metrics \
-		/metrics/cron/test /metrics/bin/collect_metrics.py
+	@$(test) /metrics/bin/collect_metrics.py
+	@$(test) /metrics/bin/collate_metrics.py
 
 console: .image
 	@docker run \
