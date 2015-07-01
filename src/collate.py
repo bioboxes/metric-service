@@ -32,3 +32,4 @@ def generate_metrics():
 def execute():
     metrics = generate_metrics()
     util.upload_file("v1/containers.json", util.json_dump(metrics))
+    print "Updated metrics file uploaded to S3"
